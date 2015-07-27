@@ -1,0 +1,1 @@
+web: gunicorn image_tiling_server:app --log-file=-
