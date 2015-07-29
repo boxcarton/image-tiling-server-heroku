@@ -11,8 +11,7 @@ A Flask server to serve these files
 ./script/create_tiles.py [path_source_image]
 ```
 
-- By default, the script puts the tile files in <project_root>/image_tiling_server/data/tiles.  If you change the destination tile folder, be sure to update it in settings.py so the web
-  server can find the files.
+- By default, the script puts the tile files in [parent_folder]/image_tiling_server/data/tiles.  If you change the destination tile folder, be sure to update it in settings.py so the server can locate the files.
 
 ## API
 
