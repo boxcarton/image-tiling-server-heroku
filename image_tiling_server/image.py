@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
 import os
 import json
 import math
@@ -12,7 +10,6 @@ class ImageMaker(object):
     self.y = int(y)
     self.width = int(width)
     self.height = int(height)
-    self.tile_folder = tile_folder
     self.info_file = os.path.join(tile_folder, 'info.json')
     self.zoom_levels_file = os.path.join(tile_folder, 'zoom-levels.json')
     self.tiles_zoom_folder = os.path.join(tile_folder, str(level))
@@ -35,7 +32,7 @@ class ImageMaker(object):
     x, y = self.get_margins()
     return (x, y, x+self.width, y+self.height)
 
-  def get_rows_columns(self):
+  def get_columns_rows(self):
     '''
     Since tile files are named col_row.jpg, we can optimize
     by onlly stitching together the tiles needed to form the picture
@@ -48,6 +45,7 @@ class ImageMaker(object):
     max_row = int(math.ceil(float(image_height) / self.tile_size)) - 1
     max_col = int(math.ceil(float(image_width) / self.tile_size)) - 1
 
+    #edge case when requesting the entire image
     end_r = min(
               int(math.floor(float(self.y + self.height)/self.tile_size)),
               max_row
@@ -79,16 +77,16 @@ class ImageMaker(object):
     self.set_zoom_levels()
 
     if int(self.level) > int(self.info['max_level']):
-      raise ValueError("Invalid Zoom Level")
+      raise ValueError("Invalid Zoom Level.")
 
     self.tile_size = self.info['tile_size']
     self.tile_format = self.info['tile_format']
 
-    start_c, end_c, start_r, end_r = self.get_rows_columns()
-    temp_width = (end_c - start_c + 1) * self.tile_size
-    temp_height = (end_r - start_r + 1) * self.tile_size
+    start_c, end_c, start_r, end_r = self.get_columns_rows()
+    temp_columns = (end_c - start_c + 1) * self.tile_size
+    temp_rows = (end_r - start_r + 1) * self.tile_size
     
-    im = Image.new('RGB', (temp_width, temp_height), None)
+    im = Image.new('RGB', (temp_columns, temp_rows), None)
     
     x_coord = 0
     y_coord = 0

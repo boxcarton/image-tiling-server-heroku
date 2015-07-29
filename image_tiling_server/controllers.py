@@ -38,7 +38,7 @@ def make_tile():
   level = request.args.get('zoom', '')
   tile_folder = app.config['TILE_FOLDER']
 
-  #grab zoom-level and info to check for request validity
+  #grab zoom-level.json and info.json
   tile_folder = app.config['TILE_FOLDER']
   zoom_file = os.path.join(tile_folder, 'zoom-levels.json')
   info_file = os.path.join(tile_folder, 'info.json')

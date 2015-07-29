@@ -14,25 +14,26 @@ class ImageTiles(object):
     self.tile_format = tile_format
 
     self.num_levels = self.calc_num_levels()
-    self.resize_filter = Image.ANTIALIAS #antialias is best, maybe allow users to change later
+    self.resize_filter = Image.ANTIALIAS #antialias is best, might let users to set
 
-    self.info = {} #information about image
+    self.info = {} #information about image tiles
     self.zoom_levels = {} #image size information at each level
+
+  def calc_num_levels(self):
+    max_dimension = max(self.image_width, self.image_height)
+    self.num_levels = int(math.ceil(math.log(max_dimension, 2))) + 1
+    return self.num_levels
 
   def get_scale_at_level(self, level):
     self.max_level = self.num_levels - 1
     return math.pow(0.5, self.max_level - level)
 
   def get_dimensions_at_level(self, level):
+    '''Returns image dimension at each level'''
     scale = self.get_scale_at_level(level)
     width = int(math.ceil(self.image_width * scale))
     height = int(math.ceil(self.image_height * scale))
     return (width, height)
-
-  def calc_num_levels(self):
-    max_dimension = max(self.image_width, self.image_height)
-    self.num_levels = int(math.ceil(math.log(max_dimension, 2))) + 1
-    return self.num_levels
 
   def get_num_tiles_at_level(self, level):
     width, height = self.get_dimensions_at_level(level)
@@ -44,6 +45,7 @@ class ImageTiles(object):
     return self.image.resize((width, height), self.resize_filter)
 
   def get_tiles_at_level(self, level):
+    '''Returns a generator for iterating through the potential tiles'''
     columns, rows = self.get_num_tiles_at_level(level)
     for column in xrange(columns):
       for row in xrange(rows):
@@ -58,12 +60,22 @@ class ImageTiles(object):
     h = min(self.tile_size, level_height - y)
     return (x, y, x + w, y + h)
 
+  def create_dest_folder(self, path):
+    '''Removes folder if already exists, creates if not'''
+    if os.path.exists(path):
+      shutil.rmtree(path)
+      os.makedirs(path)
+    else:
+      os.makedirs(path)
+    return path
+
   def create_tiles(self, dest):
     dest_folder = self.create_dest_folder(dest)
     for level in xrange(self.num_levels):
       level_folder = self.create_dest_folder(os.path.join(dest_folder, str(level)))
       level_image = self.get_image_at_level(level)
       
+      #save dimension info at each zoom level
       w, h = self.get_dimensions_at_level(level)
       self.zoom_levels[level] = {
         'width': w,
@@ -89,11 +101,3 @@ class ImageTiles(object):
 
     with open(os.path.join(dest_folder, 'zoom-levels.json'),'w') as f:
       f.write(json.dumps(self.zoom_levels))
-
-  def create_dest_folder(self, path):
-    if os.path.exists(path):
-      shutil.rmtree(path)
-      os.makedirs(path)
-    else:
-      os.makedirs(path)
-    return path

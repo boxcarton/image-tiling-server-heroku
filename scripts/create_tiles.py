@@ -32,6 +32,7 @@ def main():
 
   tiles = ImageTiles(src_filename, options.tile_size, options.tile_format)
   
+  #Script assumes saving tile files in the <dest> folder in parent directory
   parent_dir = os.path.join(os.path.dirname(__file__), os.pardir)
   tiles.create_tiles(os.path.join(parent_dir, options.dest))
 
