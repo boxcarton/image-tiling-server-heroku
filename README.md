@@ -8,7 +8,7 @@ A Flask server to serve these files
 
 #### To create image tiles
 ```python
-./script/create_tiles.py [source_image]
+./script/create_tiles.py [path_source_image]
 ```
 
 ## API
@@ -30,13 +30,15 @@ Ex:
    }
    ```
 
-#### `tile?x=x_offset&y=y_offset&width=image_width&height=image_height&zoom=zoom_level`
+#### GET tile?x=x_offset&y=y_offset&width=image_width&height=image_height&zoom=zoom_level
 
 _Returns an image of the width and height specified where
      the top-left pixel of the returned image corresponds to pixel (x,y)
      at the specified ZoomLevel.
 
-     In the example above, the returned image would be:
+     For example,
+     GET /tile?x=2000&y=3300&width=800&height=600&zoom=3
+     returns an image that's:
        - 800px wide
        - 600px tall
        - (0,0) pixel corresponds to (2000,3300) pixel at ZoomLevel 3.
