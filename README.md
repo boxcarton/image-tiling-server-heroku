@@ -34,15 +34,16 @@ Ex:
 
 _Returns an image of the width and height specified where
      the top-left pixel of the returned image corresponds to pixel (x,y)
-     at the specified ZoomLevel.
+     at the specified ZoomLevel._
 
-     For example,
+Ex:
+```
      GET /tile?x=2000&y=3300&width=800&height=600&zoom=3
      returns an image that's:
        - 800px wide
        - 600px tall
        - (0,0) pixel corresponds to (2000,3300) pixel at ZoomLevel 3.
-
+```
    - Parameters: (The origin is the top left of the image)
        - x: number  pixels width-wise from the origin
        - y: number opixels height-wise from the origin
